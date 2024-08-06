@@ -1,0 +1,20 @@
+{
+	"name": "uniplugin_module",
+	"id": "uniplugin_module",
+	"version": "1.0.0",
+	"description": "原生plugin",
+	"_dp_type": "nativeplugin",
+	"_dp_nativeplugin": {
+		"android": {
+			"plugins": [{
+				"type": "module",
+				"name": "uniplugin_module",
+				"class": "io.dcloud.uniplugin.RfidModule"
+			}],
+			"integrateType": "aar",
+			"abis": [
+				"armeabi-v7a"
+			]
+		}
+	}
+}

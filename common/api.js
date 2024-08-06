@@ -1,0 +1,1 @@
+export const upload = (params) => uni.$uv.http.upload('index/img',params) 

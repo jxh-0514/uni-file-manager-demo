@@ -1,0 +1,48 @@
+{
+	// "preloadRule": {
+	// 	"pages/index/index": {
+	// 		"network": "all",
+	// 		"packages": ["pages/shop_my", "pages/shop_vip", "pages/user", "pages/shop"]
+	// 	}
+	// },
+	"pages": [{
+		"path": "pages/index",
+		"style": {
+			"navigationBarTitleText": "首页"
+		}
+	}, {
+		"path": "pages/file",
+		"style": {
+			"navigationBarTitleText": "文件"
+		}
+	}],
+
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "手持机",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	// "tabBar": {
+	// 	"custom": true,
+	// 	"list": [{
+	// 		"pagePath": "pages/index/index"
+	// 	}, {
+	// 		"pagePath": "pages/car/car"
+	// 	}, {
+	// 		"pagePath": "pages/index/my"
+	// 	}, {
+	// 		"pagePath": "pages/msg/msg"
+	// 	}, {
+	// 		"pagePath": "pages/index/shop"
+	// 	}, {
+	// 		"pagePath": "pages/index/home"
+	// 	}]
+	// },
+	"uniIdRouter": {
+		"loginPage": "pages/login/login",
+		"needLogin": [
+			"pages/shop_vip/.*", "pages/shop_my/.*"
+		]
+	}
+}
