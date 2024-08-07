@@ -37,8 +37,8 @@ const list = ref([])
 const fileList = ref([])
 const popup = ref(null)
 const customStyle = { minWidth: '160rpx' }
-// const fileUrl = 'https://cloud.nmlog.com/f/YZiP/test-uni-file.txt'
-const fileUrl = 'http://192.168.1.61:6797/Upload/1.key'
+const fileUrl = 'https://cloud.nmlog.com/f/YZiP/test-uni-file.txt'
+// const fileUrl = 'http://192.168.1.61:6797/Upload/1.key'
 
 // 关闭功能
 const closeBtn = () => {
