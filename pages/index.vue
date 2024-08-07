@@ -37,7 +37,8 @@ const list = ref([])
 const fileList = ref([])
 const popup = ref(null)
 const customStyle = { minWidth: '160rpx' }
-const fileUrl = 'https://cloud.nmlog.com/f/YZiP/test-uni-file.txt'
+// const fileUrl = 'https://cloud.nmlog.com/f/YZiP/test-uni-file.txt'
+const fileUrl = 'http://192.168.1.61:6797/Upload/1.key'
 
 // 关闭功能
 const closeBtn = () => {
@@ -127,11 +128,13 @@ const viewCatalogBtn = () => {
 }
 // 下载到指定位置
 const downlocBtn = () => {
-	FileManager.openFolderManager(fileUrl) // 选择文件夹并下载
+	FileManager.openFolderMain(fileUrl) // 选择文件夹并下载
 }
 // 读取文件夹下的文件
 async function readFolderBtn() {
-	const folderPath = '/storage/emulated/0/newFile'
+	// const folderPath = '/storage/emulated/0/newFile'
+	const folderPath = await FileManager.selectFolder()
+	console.log('选择的文件夹路径:', folderPath)
 	const arr = await FileManager.listFilesInFolder(folderPath)
 	list.value = arr
 }

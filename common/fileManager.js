@@ -1,6 +1,109 @@
 // fileManager.js
 // 打开文件管理器选择文件夹并下载文件到选择的文件夹
-async function openFolderManager(downloadUrl) {
+// async function openFolderManager(downloadUrl) {
+// 	const systemInfo = plus.os.name; // 获取系统信息
+// 	if (systemInfo === 'Android') {
+// 		const Activity = plus.android.runtimeMainActivity(); // 获取当前Activity
+// 		const Intent = plus.android.importClass('android.content.Intent'); // 导入Intent类
+
+// 		const intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE); // 创建打开文件夹的Intent
+// 		intent.addCategory(Intent.CATEGORY_DEFAULT); // 设置分类
+
+// 		Activity.startActivityForResult(intent, 1); // 启动Activity，打开文件管理器
+
+// 		Activity.onActivityResult = async (requestCode, resultCode, data) => {
+// 			if (resultCode === Activity.RESULT_OK) { // 处理Activity返回的结果
+// 				await handleActivityResult(data, downloadUrl);
+// 			}
+// 		};
+// 	}
+// }
+
+// // 处理从文件管理器返回的结果
+// async function handleActivityResult(data, downloadUrl) {
+// 	const Uri = data.getData(); // 获取返回的URI
+// 	plus.android.importClass(Uri);
+
+// 	const DocumentsContract = plus.android.importClass(
+// 		'android.provider.DocumentsContract'); // 导入DocumentsContract类
+// 	const docId = DocumentsContract.getTreeDocumentId(Uri); // 获取Document ID
+// 	const [type, id] = docId.split(':'); // 分割Document ID为类型和ID
+
+// 	if (id) {
+// 		const folderPath = getFolderPath(type, id); // 获取文件夹路径
+
+// 		console.log('选择的文件夹路径:', folderPath);
+
+// 		await requestStoragePermissions(); // 请求存储权限
+// 		await downloadFileToFolder(downloadUrl, folderPath); // 下载文件到选择的文件夹
+// 	}
+// }
+
+// // 获取文件夹路径
+// function getFolderPath(type, id) {
+// 	const Environment = plus.android.importClass('android.os.Environment'); // 导入Environment类
+// 	const System = plus.android.importClass('java.lang.System'); // 导入System类
+
+// 	if (type === 'primary') {
+// 		return `${Environment.getExternalStorageDirectory()}/${id}`; // 返回主存储路径
+// 	} else {
+// 		return `${System.getenv('SECONDARY_STORAGE')}/${id}`; // 返回次存储路径
+// 	}
+// }
+
+// // 请求读写权限
+// function requestStoragePermissions() {
+// 	return new Promise((resolve, reject) => {
+// 		const permissions = [
+// 			'android.permission.READ_EXTERNAL_STORAGE',
+// 			'android.permission.WRITE_EXTERNAL_STORAGE'
+// 		];
+
+// 		plus.android.requestPermissions(permissions, result => {
+// 			if (result.granted) { // 如果权限授予
+// 				console.log('存储权限已授予');
+// 				resolve();
+// 			} else {
+// 				uni.showToast({
+// 					title: '存储权限被拒绝',
+// 					icon: 'none'
+// 				});
+// 				reject(new Error('存储权限被拒绝'));
+// 			}
+// 		});
+// 	});
+// }
+
+// // 下载文件到指定文件夹
+// function downloadFileToFolder(url, folderPath) {
+// 	return new Promise((resolve, reject) => {
+// 		const fileName = url.substring(url.lastIndexOf('/') + 1); // 从URL中提取文件名
+// 		const filePath = `file://${folderPath}/${fileName}`; // 构建文件路径
+
+// 		const dtask = plus.downloader.createDownload(url, {
+// 			filename: filePath
+// 		}, (d, status) => {
+// 			if (status === 200) { // 如果下载成功
+// 				const fileSaveUrl = plus.io.convertLocalFileSystemURL(d.filename); // 转换为本地文件系统URL
+// 				uni.showToast({
+// 					title: '文件下载成功',
+// 					icon: 'success'
+// 				});
+// 				resolve(fileSaveUrl);
+// 			} else {
+// 				plus.downloader.clear(); // 清除下载任务
+// 				uni.showToast({
+// 					title: '文件下载失败',
+// 					icon: 'none'
+// 				});
+// 				reject(new Error('文件下载失败'));
+// 			}
+// 		});
+// 		dtask.start(); // 开始下载任务
+// 	});
+// }
+// 打开文件管理器选择文件夹
+async function openFolderManager() {
 	const systemInfo = plus.os.name; // 获取系统信息
 	if (systemInfo === 'Android') {
 		const Activity = plus.android.runtimeMainActivity(); // 获取当前Activity
@@ -10,33 +113,27 @@ async function openFolderManager(downloadUrl) {
 		intent.addCategory(Intent.CATEGORY_DEFAULT); // 设置分类
 
 		Activity.startActivityForResult(intent, 1); // 启动Activity，打开文件管理器
-
-		Activity.onActivityResult = async (requestCode, resultCode, data) => {
-			if (resultCode === Activity.RESULT_OK) { // 处理Activity返回的结果
-				await handleActivityResult(data, downloadUrl);
-			}
-		};
 	}
 }
 
-// 处理从文件管理器返回的结果
-async function handleActivityResult(data, downloadUrl) {
-	const Uri = data.getData(); // 获取返回的URI
-	plus.android.importClass(Uri);
+// 处理Activity返回的结果
+async function handleActivityResult(requestCode, resultCode, data) {
+	if (resultCode === plus.android.runtimeMainActivity().RESULT_OK) { // 处理Activity返回的结果
+		const Uri = data.getData(); // 获取返回的URI
+		plus.android.importClass(Uri);
 
-	const DocumentsContract = plus.android.importClass(
-		'android.provider.DocumentsContract'); // 导入DocumentsContract类
-	const docId = DocumentsContract.getTreeDocumentId(Uri); // 获取Document ID
-	const [type, id] = docId.split(':'); // 分割Document ID为类型和ID
+		const DocumentsContract = plus.android.importClass(
+			'android.provider.DocumentsContract'); // 导入DocumentsContract类
+		const docId = DocumentsContract.getTreeDocumentId(Uri); // 获取Document ID
+		const [type, id] = docId.split(':'); // 分割Document ID为类型和ID
 
-	if (id) {
-		const folderPath = getFolderPath(type, id); // 获取文件夹路径
+		if (id) {
+			const folderPath = getFolderPath(type, id); // 获取文件夹路径
 
-		console.log('选择的文件夹路径:', folderPath);
-
-		await requestStoragePermissions(); // 请求存储权限
-		await downloadFileToFolder(downloadUrl, folderPath); // 下载文件到选择的文件夹
+			return folderPath;
+		}
 	}
+	throw new Error('文件夹选择失败');
 }
 
 // 获取文件夹路径
@@ -78,7 +175,7 @@ function requestStoragePermissions() {
 function downloadFileToFolder(url, folderPath) {
 	return new Promise((resolve, reject) => {
 		const fileName = url.substring(url.lastIndexOf('/') + 1); // 从URL中提取文件名
-		const filePath = `file://${folderPath}/${fileName}`; // 构建文件路径
+		const filePath = `file://${folderPath}/${fileName}`; // 构建文件路径，必须加file://否则无法在文件夹看到下载的文件
 
 		const dtask = plus.downloader.createDownload(url, {
 			filename: filePath
@@ -101,6 +198,42 @@ function downloadFileToFolder(url, folderPath) {
 		});
 		dtask.start(); // 开始下载任务
 	});
+}
+
+// 主函数，整合所有步骤
+async function openFolderMain(downloadUrl) {
+	try {
+		await openFolderManager(); // 打开文件管理器
+		const result = await new Promise((resolve, reject) => {
+			plus.android.runtimeMainActivity().onActivityResult = (requestCode, resultCode, data) => {
+				handleActivityResult(requestCode, resultCode, data)
+					.then(resolve)
+					.catch(reject);
+			};
+		});
+		const folderPath = result;
+		await requestStoragePermissions(); // 请求存储权限
+		await downloadFileToFolder(downloadUrl, folderPath); // 下载文件到选择的文件夹
+	} catch (error) {
+		console.error('操作失败:', error);
+	}
+}
+// 打开文件管理器选择文件夹并返回路径
+async function selectFolder() {
+	try {
+		await openFolderManager();
+		const folderPath = await new Promise((resolve, reject) => {
+			plus.android.runtimeMainActivity().onActivityResult = (requestCode, resultCode, data) => {
+				handleActivityResult(requestCode, resultCode, data)
+					.then(resolve)
+					.catch(reject);
+			};
+		});
+		return folderPath
+	} catch (error) {
+		console.error('操作失败:', error);
+		throw error;
+	}
 }
 // ========================= 获取文件路径 =======================
 /**
@@ -393,7 +526,9 @@ async function openFileWithPath(filePath) {
 }
 
 export default {
-	openFolderManager,
+	// openFolderManager,
+	openFolderMain,
+	selectFolder,
 	openFileManager,
 	listFilesInFolder,
 	openFileWithPath
